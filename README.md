@@ -2,7 +2,8 @@
 길벗OpenCV4 Chapter13 (예제통합) [2025-0721_1822]
 <br>
 <br>
-* **[📥 전체 프로젝트 및 리소스 다운로드 (680MB)]([https://drive.google.com/file/d/1k1p-m5qz3zMmbgHrbI6gEj4rAPZ0vGkc/view?usp=drive_link])**
+* **[구글 드라이브에서 전체 프로젝트 다운로드]([여기에_링크_붙여넣기](https://drive.google.com/file/d/1k1p-m5qz3zMmbgHrbI6gEj4rAPZ0vGkc/view?usp=drive_link))**
+* **[📥 전체 프로젝트 및 리소스 다운로드 (680MB)](https://drive.google.com/file/d/1k1p-m5qz3zMmbgHrbI6gEj4rAPZ0vGkc/view?usp=drive_link)**
 
 ### 🛠️ 실행 환경
 * **IDE:** Visual Studio 2022
