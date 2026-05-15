@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CMyDIB.h"
+#include "COpenGLControl.h"
 
 class CMyMat
 {
@@ -11,7 +12,7 @@ public:
 	int LoadImg(CString strImgFile, int iFlag = IMREAD_GRAYSCALE);
 	void CreateDIB(bool fOrigin);
 
-	void DispMat(CStatic* pPicControl, bool fRatio);
+	void DispMat(COpenGLControl* pPicGDI, bool fRatio);
 	void DispDIB(CPaintDC* pDC, CWnd* pWnd, CStatic* pPicControl, bool fRatio);
 
 	Mat& GetMat();
@@ -31,4 +32,3 @@ private:
 
 	void ImgRatio(CSize szImg, CRect& rtImg);
 };
-

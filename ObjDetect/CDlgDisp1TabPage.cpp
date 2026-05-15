@@ -24,6 +24,7 @@ CDlgDisp1TabPage::~CDlgDisp1TabPage()
 void CDlgDisp1TabPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_PIC_SRC, m_wndPicGL);
 }
 
 
@@ -56,8 +57,8 @@ int CDlgDisp1TabPage::OnInitProgram(int iPage)
 	}
 
 	if (iRetVal == 0) {
-		CStatic* pstPic = (CStatic*)GetDlgItem(IDC_PIC_SRC);
-		m_Video.SetPicCtrl(pstPic);
+		m_wndPicGL.SetUseGL(true);
+		m_Video.SetPicCtrl(&m_wndPicGL);
 	}
 
 	return iRetVal;

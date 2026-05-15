@@ -2,6 +2,7 @@
 #include "afxdialogex.h"
 
 #include "CMyVideoCapture.h"
+#include "COpenGLControl.h"
 
 // CDlgDisp1TabPage 대화 상자
 
@@ -27,6 +28,7 @@ public:
 
 private:
 	CMyVideoCapture m_Video;
+	COpenGLControl m_wndPicGL;
 
 	// CWinThread* m_pThread;
 	// bool m_isWorkingThread;

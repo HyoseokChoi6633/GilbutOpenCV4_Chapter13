@@ -120,12 +120,22 @@ int CDlgDisp3TabPage::OnInitProgram(int iPage)
 		break;
 	}
 
+	if (iRetVal != -1) {
+		m_wndSrcGL.SetUseGL(true);
+		m_wndMat1GL.SetUseGL(true);
+		m_wndMat2GL.SetUseGL(true);
+	}
+
 	return iRetVal;
 }
 
 void CDlgDisp3TabPage::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
+	// IDC_PIC_SRC와 m_wndSrcGL을 연결
+	DDX_Control(pDX, IDC_PIC_SRC, m_wndSrcGL);
+	DDX_Control(pDX, IDC_PIC_MAT1, m_wndMat1GL);
+	DDX_Control(pDX, IDC_PIC_MAT2, m_wndMat2GL);
 }
 
 
@@ -142,6 +152,7 @@ void CDlgDisp3TabPage::OnPaint()
 	CPaintDC dc(this); // device context for painting
 	// TODO: 여기에 메시지 처리기 코드를 추가합니다.
 	// 그리기 메시지에 대해서는 CDialog::OnPaint()을(를) 호출하지 마십시오.
+	/*
 	CStatic* pstPic = (CStatic*)GetDlgItem(IDC_PIC_SRC);
 	m_Src.DispDIB(&dc, this, pstPic, true);
 
@@ -150,4 +161,17 @@ void CDlgDisp3TabPage::OnPaint()
 
 	pstPic = (CStatic*)GetDlgItem(IDC_PIC_MAT2);
 	m_Mat2.DispDIB(&dc, this, pstPic, true);
+	*/
+
+	if (!m_Src.empty()) {
+		m_Src.DispMat(&m_wndSrcGL, true);
+	}
+
+	if (!m_Mat1.empty()) {
+		m_Mat1.DispMat(&m_wndMat1GL, true);
+	}
+
+	if (!m_Mat2.empty()) {
+		m_Mat2.DispMat(&m_wndMat2GL, true);
+	}
 }

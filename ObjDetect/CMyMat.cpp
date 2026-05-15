@@ -42,9 +42,14 @@ int CMyMat::LoadImg(CString strImgFile, int iFlag)
 }
 
 
-void CMyMat::DispMat(CStatic* pPicControl, bool fRatio)
+void CMyMat::DispMat(COpenGLControl* pPicControl, bool fRatio)
 {
     if (!pPicControl || m_Img.empty()) {
+        return;
+    }
+
+    if (pPicControl->GetUseGL()) {
+        pPicControl->Render(m_Img, fRatio);
         return;
     }
 
@@ -122,23 +127,14 @@ void CMyMat::setLabel(const vector<Point>& pts, const String& label)
 
 CMyMat& CMyMat::operator=(const Mat& matRight)
 {
-    // 더 간결한 함수 (모든 속성 일치 여부 확인)
-    auto areMatsIdentical = [](const cv::Mat& mat1, const cv::Mat& mat2) {
-        if (mat1.empty() && mat2.empty()) {
-            return true;
-        }
-        if (mat1.empty() || mat2.empty()) {
-            return false;
-        }
-        if (mat1.size() != mat2.size() || mat1.type() != mat2.type()) {
-            return false;
-        }
-        return cv::countNonZero(mat1 != mat2) == 0;
-        };
-
-    if (areMatsIdentical(m_Img, matRight)) {
+    // 1. 자기 자신을 대입하는 경우만 방어
+    if (m_Img.data == matRight.data) {
         return *this;
     }
+
+    // 2. 비교 없이 바로 복사 (이게 훨씬 빠릅니다)
+    // copyTo는 내부적으로 크기/타입이 같으면 재할당 없이 데이터만 복사합니다.
+    matRight.copyTo(m_Img);
 
     m_Img.release();
 

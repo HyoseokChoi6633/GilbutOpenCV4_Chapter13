@@ -5,6 +5,7 @@
 // CDlgDisp3TabPage 대화 상자
 
 #include "CMyMat.h"
+#include "COpenGLControl.h"
 
 class CDlgDisp3TabPage : public CDialog
 {
@@ -30,6 +31,10 @@ private:
 	CMyMat m_Src;
 	CMyMat m_Mat1;
 	CMyMat m_Mat2;
+
+	COpenGLControl m_wndSrcGL;
+	COpenGLControl m_wndMat1GL;
+	COpenGLControl m_wndMat2GL;
 public:
 	afx_msg void OnPaint();
 };
