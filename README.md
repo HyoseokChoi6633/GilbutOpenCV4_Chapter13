@@ -1,7 +1,13 @@
 # GilbutOpenCV4_Chapter13
+<<<<<<< HEAD
 길벗OpenCV4 Chapter13 (예제통합) [2026-0518_2115]
 <br>
 * **[📥 전체 프로젝트 및 리소스 다운로드 (696MB)](https://drive.google.com/file/d/1iydggtPXza4Fo9g4X5u_NP_CtDLbZLkD/view?usp=drive_link)**
+=======
+길벗OpenCV4 Chapter13 (예제통합) [2026-0515_1706]
+<br>
+* **[📥 전체 프로젝트 및 리소스 다운로드 (1.05G)](https://drive.google.com/file/d/16Qe1f2eLrKaqtQ7bqrwmrpZoKZ-31cL_/view?usp=drive_link)**<br>
+>>>>>>> 1cebd1d820b9cd5f0e42331c12d182c349e4a4e2
 <br>
 ### 🛠️ 실행 환경
 * **IDE:** Visual Studio 2022<br>
@@ -22,10 +28,13 @@ gdi 관련 스마트 포인터와 gdi 자동해제 적용 상태<br>
 	[코드 수정으로 이전의 Gdi 출력도 가능]<br>
 HOG 동영상 트래킹 로직 개선<br>
 <br>
+<<<<<<< HEAD
 2026-0518<br>
 Gdi 또는 OpenGL 출력 선택 가능 UI 적용<br>
 <br>
 <br>
+=======
+>>>>>>> 1cebd1d820b9cd5f0e42331c12d182c349e4a4e2
 qrCode 텝은 카메라가 있어야 되고<br>
 카메라가 인식한 qrCode의 문자열을 화면에 표시함(컴퓨터 카메라에 휴대폰 화면의 QR코드를 띄어 URL 표시가능)<br>
 <br>
@@ -41,10 +50,17 @@ class 를 작성함 (CMy 로 시작되는 클래스임)<br>
 queue에 처리된 이미지의 데이터 가 있고<br>
 queue에 접근할때는 [임계영역]을 사용해서 스레드의 데드락이나 오류를 방지함<br>
 동영상 재생이 아니라면 cpu 사용을 하지 않게 막음(탭 이동으로 이미지 표시시 동영상 일시 중지)<br>
+<<<<<<< HEAD
 결론: 단일 스레드 보단 동영상 재생시 cpu 부하가 적음<br>
 <br>
 Debug 실행 파일은 동영상 재생이 아주 느림... 이건 release 상태의 파일은 정상적인 속도로 나옴<br>
 <br>
+=======
+결론: 단일 스레드 보단 동영상 재생시 cpu 부하가 적음
+<br><br>
+Debug 실행 파일은 동영상 재생이 아주 느림... 이건 release 상태의 파일은 정상적인 속도로 나옴<br><br>
+
+>>>>>>> 1cebd1d820b9cd5f0e42331c12d182c349e4a4e2
 <img src="./images/screenshoot1.png" width="800" height="750" alt="실행 화면"><br>
 <img src="./images/screenshoot2.png" width="800" height="750" alt="실행 화면"><br>
 <img src="./images/screenshoot3.png" width="800" height="750" alt="실행 화면"><br>
