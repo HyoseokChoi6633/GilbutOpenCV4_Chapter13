@@ -6,6 +6,7 @@
 
 #include "CMyMat.h"
 #include "COpenGLControl.h"
+#include "ObjDetectDlg.h"
 
 class CDlgDisp3TabPage : public CDialog
 {
@@ -16,6 +17,7 @@ public:
 	virtual ~CDlgDisp3TabPage();
 
 	int OnInitProgram(int iPage);
+	void SetDisplayMode(EDisplayMode eDisplayMode);
 
 // 대화 상자 데이터입니다.
 #ifdef AFX_DESIGN_TIME

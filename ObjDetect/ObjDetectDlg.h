@@ -37,6 +37,10 @@ public:
 
 private:
 	CMyTabCtl m_objTab;
+	// 이미지 출력 방식 선택
+	EDisplayMode m_eDisplayMode;
 public:
 	afx_msg void OnDestroy();
+	afx_msg void OnClickedRadioDispGdi();
+	afx_msg void OnBnClickedRadioDispOpengl();
 };

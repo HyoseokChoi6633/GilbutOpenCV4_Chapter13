@@ -81,13 +81,25 @@ void CMyTabCtl::OnTcnSelchange(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 
 	// 탭을 벗어 났을 때 쓰레드 때문에 난잡해진 코드...
-	// 테스트 용으로 바주시길...
+	// 테스트 용으로 봐주시길...
 	if (iSelect >= 2) {
 		OnThreadDestroy();
 		((CDlgDisp1TabPage*)m_parrDlg[iSelect])->OnPlayVideo();
 	}
 	else {
 		OnThreadDestroy();
+	}
+}
+
+void CMyTabCtl::OnDispTypeChange(EDisplayMode eDisplayMode)
+{
+	int iSelect = m_tabCtl.GetCurSel();
+
+	if (iSelect >= 2) {
+		((CDlgDisp1TabPage*)m_parrDlg[iSelect])->SetDisplayMode(eDisplayMode);
+	}
+	else {
+		((CDlgDisp3TabPage*)m_parrDlg[iSelect])->SetDisplayMode(eDisplayMode);
 	}
 }
 

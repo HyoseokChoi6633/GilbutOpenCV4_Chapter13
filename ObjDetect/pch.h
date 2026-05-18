@@ -18,4 +18,9 @@ using namespace cv;
 
 #include <afxmt.h>
 
+enum EDisplayMode {
+	MODE_GDI = 0,
+	MODE_OPENGL
+};
+
 #endif //PCH_H

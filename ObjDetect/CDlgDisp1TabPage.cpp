@@ -57,11 +57,23 @@ int CDlgDisp1TabPage::OnInitProgram(int iPage)
 	}
 
 	if (iRetVal == 0) {
-		m_wndPicGL.SetUseGL(true);
+		// m_wndPicGL.InitGL();
 		m_Video.SetPicCtrl(&m_wndPicGL);
 	}
 
 	return iRetVal;
+}
+
+void CDlgDisp1TabPage::SetDisplayMode(EDisplayMode eDisplayMode)
+{
+	m_wndPicGL.MuxDraw(true);
+	if (eDisplayMode == MODE_GDI) {
+		m_wndPicGL.SetUseGL(false);
+	}
+	else {
+		m_wndPicGL.SetUseGL(true);
+	}
+	m_wndPicGL.MuxDraw(false);
 }
 
 

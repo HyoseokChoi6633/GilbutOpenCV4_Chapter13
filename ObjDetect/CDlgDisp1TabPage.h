@@ -4,8 +4,9 @@
 #include "CMyVideoCapture.h"
 #include "COpenGLControl.h"
 
-// CDlgDisp1TabPage 대화 상자
+#include "ObjDetectDlg.h"
 
+// CDlgDisp1TabPage 대화 상자
 class CDlgDisp1TabPage : public CDialog
 {
 	DECLARE_DYNAMIC(CDlgDisp1TabPage)
@@ -25,6 +26,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	int OnInitProgram(int iPage);
+
+	void SetDisplayMode(EDisplayMode eDisplayMode);
 
 private:
 	CMyVideoCapture m_Video;

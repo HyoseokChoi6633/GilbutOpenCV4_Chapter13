@@ -7,17 +7,17 @@ BEGIN_MESSAGE_MAP(COpenGLControl, CStatic)
 	ON_WM_ERASEBKGND()
 END_MESSAGE_MAP()
 
-COpenGLControl::COpenGLControl() : m_hDC(nullptr), m_hRC(nullptr), m_nTexID(0), m_nLastW(0), m_nLastH(0), m_ShaderProgram(0), m_VAO(0), m_VBO(0), m_bUseGL(false)
+COpenGLControl::COpenGLControl() : m_hDC(nullptr), m_hRC(nullptr), m_nTexID(0), m_nLastW(0), m_nLastH(0), m_ShaderProgram(0), m_VAO(0), m_VBO(0), m_bUseGL(false), m_pDrawMux(nullptr)
 {
 }
 
 void COpenGLControl::InitGL()
 {
-	if (!m_bUseGL) {
-		return;
-	}
-
+	// [핵심] 여기서 딱 한 번만 이 윈도우의 고유 DC를 발급받아 멤버 변수에 박아둡니다.
 	m_hDC = ::GetDC(this->GetSafeHwnd());
+
+	if (!m_hDC)
+		return;
 
 	PIXELFORMATDESCRIPTOR pfd;
 	ZeroMemory(&pfd, sizeof(pfd)); // 0으로 깨끗하게 초기화
@@ -85,8 +85,24 @@ void COpenGLControl::Render(const cv::Mat& img, bool fRatio)
 		return;
 	}
 
-	wglMakeCurrent(m_hDC, m_hRC);
+	//// 2. [심폐소생술] 현재 스레드에 묶인 컨텍스트가 진짜 정상인지 체크합니다.
+	//HGLRC hActiveRC = wglGetCurrentContext();
 
+	//// 만약 묶여있지 않거나, 기존 m_hRC와 일치하지 않는다면 (첫 진입 시 발생하는 문제)
+	//if (hActiveRC != m_hRC)
+	//{
+	//	// [수정] 실패하더라도 쉽게 포기하지 않고 한 번 더 컨텍스트를 확실히 리셋합니다.
+	//	wglMakeCurrent(nullptr, nullptr);
+
+	//	// 강제로 기존 끊어졌던 연결을 현재 활성화된 화면(hCurrentDC)에 다시 붙입니다.
+	//	if (!wglMakeCurrent(m_hDC, m_hRC)) {			
+	//		wglMakeCurrent(nullptr, nullptr);
+	//		return;
+	//	}
+	//}
+
+	wglMakeCurrent(m_hDC, m_hRC);
+		
 	// 1. 비율 유지 좌표 계산
 	float vertices[] = {
 		// 위치(x, y)		// 텍스처(u, v)
@@ -171,6 +187,7 @@ void COpenGLControl::Render(const cv::Mat& img, bool fRatio)
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
 	SwapBuffers(m_hDC);
+
 	wglMakeCurrent(nullptr, nullptr);
 }
 
@@ -194,29 +211,43 @@ void COpenGLControl::CleanupGL()
 		m_hRC = nullptr;
 	}
 
-	// 4. DC 해제 및 클래스 기본 파괴자 호출
-	if (m_hDC)
-	{
-		::ReleaseDC(m_hWnd, m_hDC);
+	if (m_hDC) {
+		::ReleaseDC(this->GetSafeHwnd(), m_hDC);
 		m_hDC = nullptr;
 	}
 }
 
 void COpenGLControl::SetUseGL(bool bUseGL)
 {
-	m_bUseGL = bUseGL;
-
-	if (m_bUseGL) {
+	if (m_hRC == nullptr) {
 		InitGL();
 	}
-	else {
-		CleanupGL();
-	}
+
+	m_bUseGL = bUseGL;
 }
 
 bool COpenGLControl::GetUseGL() const
 {
 	return m_bUseGL;
+}
+
+void COpenGLControl::MuxDraw(bool bLock)
+{
+	if (!m_pDrawMux) {
+		return;
+	}
+
+	if (bLock) {
+		m_pDrawMux->Lock();
+	}
+	else {
+		m_pDrawMux->Unlock();
+	}
+}
+
+void COpenGLControl::SetMuxDraw(CMutex* pDrawMux)
+{
+	m_pDrawMux = pDrawMux;
 }
 
 std::string COpenGLControl::ReadShaderFile(const char* pFilePath)
@@ -305,7 +336,7 @@ void COpenGLControl::OnPaint()
 
 		// 이미지가 한 번이라도 로드된 적이 있고, RC가 초기화 되었다면 다시 그림
 		if (m_hRC && m_nTexID > 0 && m_nLastW > 0) {
-			wglMakeCurrent(m_hDC, m_hRC);
+			wglMakeCurrent(dc.GetSafeHdc(), m_hRC);
 
 			// 이전 Render에서 계산된 좌표가 VBO에 남아 있었으므로
 			// 별도의 계산 없이 Clear와 Draw만 수행합니다.
@@ -318,14 +349,14 @@ void COpenGLControl::OnPaint()
 
 			glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-			SwapBuffers(m_hDC);
+			SwapBuffers(dc.GetSafeHdc());
 			wglMakeCurrent(nullptr, nullptr);
 		}
 		else {
 			// 출력할 이미지가 없을 때는 그냥 검은색으로 배경만 채움
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
-			SwapBuffers(m_hDC);
+			SwapBuffers(dc.GetSafeHdc());
 		}
 	}
 	else {

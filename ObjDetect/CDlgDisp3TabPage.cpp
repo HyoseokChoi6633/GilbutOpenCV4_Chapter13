@@ -120,13 +120,27 @@ int CDlgDisp3TabPage::OnInitProgram(int iPage)
 		break;
 	}
 
-	if (iRetVal != -1) {
+	//if (iRetVal != -1) {
+	//	m_wndSrcGL.InitGL();
+	//	m_wndMat1GL.InitGL();
+	//	m_wndMat2GL.InitGL();
+	//}
+
+	return iRetVal;
+}
+
+void CDlgDisp3TabPage::SetDisplayMode(EDisplayMode eDisplayMode)
+{
+	if (eDisplayMode == MODE_GDI) {
+		m_wndSrcGL.SetUseGL(false);
+		m_wndMat1GL.SetUseGL(false);
+		m_wndMat2GL.SetUseGL(false);
+	}
+	else {
 		m_wndSrcGL.SetUseGL(true);
 		m_wndMat1GL.SetUseGL(true);
 		m_wndMat2GL.SetUseGL(true);
 	}
-
-	return iRetVal;
 }
 
 void CDlgDisp3TabPage::DoDataExchange(CDataExchange* pDX)

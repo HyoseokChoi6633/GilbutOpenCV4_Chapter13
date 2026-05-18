@@ -12,13 +12,14 @@ class COpenGLControl :
     public CStatic
 {
 private:
-    HDC m_hDC;
+    HDC m_hDC;          // 멤버 변수로 고정 DC 핸들 관리
     HGLRC m_hRC;
     GLuint m_nTexID;
     int m_nLastW, m_nLastH; // 이미지 크기 변경 감지용
     GLuint m_ShaderProgram;
     GLuint m_VAO, m_VBO;
     bool m_bUseGL;
+    CMutex* m_pDrawMux;
 
 public:
     COpenGLControl();
@@ -34,6 +35,9 @@ public:
 
     void SetUseGL(bool bUseGL);
     bool GetUseGL() const;
+
+    void MuxDraw(bool bLock = true);
+    void SetMuxDraw(CMutex* pDrawMux);
 
 protected:
     std::string ReadShaderFile(const char* pFilePath);

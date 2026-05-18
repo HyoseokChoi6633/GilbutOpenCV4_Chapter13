@@ -65,6 +65,7 @@ bool CMyVideoCapture::OnOpenVideo(CString strVideoFile)
 void CMyVideoCapture::SetPicCtrl(COpenGLControl* pstPic)
 {
 	m_pWndPicGL = pstPic;
+	m_pWndPicGL->SetMuxDraw(&m_muDrawV);
 }
 
 bool CMyVideoCapture::CreateThreadForVideo()

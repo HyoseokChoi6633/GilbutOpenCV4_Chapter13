@@ -52,6 +52,7 @@ END_MESSAGE_MAP()
 
 CObjDetectDlg::CObjDetectDlg(CWnd* pParent /*=nullptr*/)
 	: CDialog(IDD_OBJDETECT_DIALOG, pParent)
+	, m_eDisplayMode(MODE_GDI)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
@@ -68,6 +69,8 @@ BEGIN_MESSAGE_MAP(CObjDetectDlg, CDialog)
 	ON_WM_QUERYDRAGICON()
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_MAIN, &CObjDetectDlg::OnTcnSelchangeTabMain)
 	ON_WM_DESTROY()
+	ON_BN_CLICKED(IDC_RADIO_DISP_GDI, &CObjDetectDlg::OnClickedRadioDispGdi)
+	ON_BN_CLICKED(IDC_RADIO_DISP_OPENGL, &CObjDetectDlg::OnBnClickedRadioDispOpengl)
 END_MESSAGE_MAP()
 
 
@@ -108,6 +111,13 @@ BOOL CObjDetectDlg::OnInitDialog()
 		PostQuitMessage(WM_QUIT);
 		return FALSE;
 	}
+
+	// [방법 2-A] CheckRadioButton 사용 (그룹 내에서 하나만 콕 집어 켤 때 편리)
+	// 인자: (그룹의 시작 ID, 그룹의 끝 ID, 체크할 버튼 ID)
+	CheckRadioButton(IDC_RADIO_DISP_GDI, IDC_RADIO_DISP_OPENGL, IDC_RADIO_DISP_OPENGL);
+	m_eDisplayMode = MODE_OPENGL;
+
+	m_objTab.OnDispTypeChange(m_eDisplayMode);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -168,6 +178,7 @@ void CObjDetectDlg::OnTcnSelchangeTabMain(NMHDR* pNMHDR, LRESULT* pResult)
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	switch (pNMHDR->idFrom) {
 	case IDC_TAB_MAIN:
+		m_objTab.OnDispTypeChange(m_eDisplayMode);
 		m_objTab.OnTcnSelchange(pNMHDR, pResult);
 		break;
 	default:
@@ -186,4 +197,26 @@ void CObjDetectDlg::OnDestroy()
 	// 2024-0616_1419 프로그램 종료시 스레드 종료 코드 추가
 	// 동영상과 카메라 스레드 종료 코드
 	m_objTab.OnThreadDestroy();
+}
+
+void CObjDetectDlg::OnClickedRadioDispGdi()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_eDisplayMode != MODE_GDI) {
+		m_eDisplayMode = MODE_GDI;
+
+		m_objTab.OnDispTypeChange(m_eDisplayMode);
+		Invalidate(FALSE);		// 화면 갱신 요청
+	}
+}
+
+void CObjDetectDlg::OnBnClickedRadioDispOpengl()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if (m_eDisplayMode != MODE_OPENGL) {
+		m_eDisplayMode = MODE_OPENGL;
+
+		m_objTab.OnDispTypeChange(m_eDisplayMode);
+		Invalidate(FALSE);		// 화면 갱신 요청
+	}
 }
