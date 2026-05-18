@@ -4,10 +4,6 @@
 <br>
 * **[📥 전체 프로젝트 및 리소스 다운로드 (696MB)](https://drive.google.com/file/d/1iydggtPXza4Fo9g4X5u_NP_CtDLbZLkD/view?usp=drive_link)**
 =======
-길벗OpenCV4 Chapter13 (예제통합) [2026-0515_1706]
-<br>
-* **[📥 전체 프로젝트 및 리소스 다운로드 (1.05G)](https://drive.google.com/file/d/16Qe1f2eLrKaqtQ7bqrwmrpZoKZ-31cL_/view?usp=drive_link)**<br>
->>>>>>> 1cebd1d820b9cd5f0e42331c12d182c349e4a4e2
 <br>
 ### 🛠️ 실행 환경
 * **IDE:** Visual Studio 2022<br>
