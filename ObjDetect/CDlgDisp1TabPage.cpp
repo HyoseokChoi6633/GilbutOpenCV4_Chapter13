@@ -59,6 +59,7 @@ int CDlgDisp1TabPage::OnInitProgram(int iPage)
 	if (iRetVal == 0) {
 		// m_wndPicGL.InitGL();
 		m_Video.SetPicCtrl(&m_wndPicGL);
+		m_Video.CreateThreadForVideo();
 	}
 
 	return iRetVal;
@@ -89,12 +90,29 @@ void CDlgDisp1TabPage::SetDisplayMode(EDisplayMode eDisplayMode)
 void CDlgDisp1TabPage::OnPlayVideo()
 {
 	// TODO: 여기에 구현 코드 추가.
-	m_Video.CreateThreadForVideo();
-	//m_pThread = AfxBeginThread(ThreadForPlayVideo, this);
+	m_Video.m_bPause = false;
+
+	m_Video.SetMuxNotify();
+}
+
+void CDlgDisp1TabPage::OnPauseVideo()
+{
+	m_Video.m_bPause = true;
+
+	m_Video.SetMuxNotify();
 }
 
 void CDlgDisp1TabPage::ReleaseThread()
 {
 	m_Video.ReleaseThread();
 	//m_isWorkingThread = !bExitThread;
+}
+
+void CDlgDisp1TabPage::SetHogSkipFrame(bool bHogSkipFrame) {
+	m_Video.SetHogSkipFrame(bHogSkipFrame);
+}
+
+void CDlgDisp1TabPage::SetShowFPS(bool bShowFPS)
+{
+	m_Video.SetShowFPS(bShowFPS);
 }

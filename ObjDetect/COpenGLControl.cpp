@@ -238,14 +238,25 @@ void COpenGLControl::MuxDraw(bool bLock)
 	}
 
 	if (bLock) {
-		m_pDrawMux->Lock();
+		// 1. 아직 락 매니저가 세팅되지 않았다면 외부 뮤텍스를 주입하여 소유권을 가집니다.
+		if (!m_drawLock.owns_lock()) {
+			// 디폴트 생성자로 만들어진 m_drawLock에 실제 뮤텍스 주소를 연결하며 잠금
+			m_drawLock = std::unique_lock<std::mutex>(*m_pDrawMux);
+		}
+		else {
+			// 이미 연결되어 있다면 그냥 락만 다시 잡습니다.
+			m_drawLock.lock();
+		}
 	}
 	else {
-		m_pDrawMux->Unlock();
+		// 2. 락을 해제하라고 하면 소유하고 있는 락을 수동으로 풀어줍니다.
+		if (m_drawLock.owns_lock()) {
+			m_drawLock.unlock();
+		}
 	}
 }
 
-void COpenGLControl::SetMuxDraw(CMutex* pDrawMux)
+void COpenGLControl::SetMuxDraw(std::mutex* pDrawMux)
 {
 	m_pDrawMux = pDrawMux;
 }

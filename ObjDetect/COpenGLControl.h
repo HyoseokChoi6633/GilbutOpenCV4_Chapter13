@@ -19,7 +19,10 @@ private:
     GLuint m_ShaderProgram;
     GLuint m_VAO, m_VBO;
     bool m_bUseGL;
-    CMutex* m_pDrawMux;
+    std::mutex* m_pDrawMux;
+
+    // 락 상태를 함수 외부에서도 유지하기 위한 락 매니저 멤버 변수 추가
+    std::unique_lock<std::mutex> m_drawLock;
 
 public:
     COpenGLControl();
@@ -37,7 +40,7 @@ public:
     bool GetUseGL() const;
 
     void MuxDraw(bool bLock = true);
-    void SetMuxDraw(CMutex* pDrawMux);
+    void SetMuxDraw(std::mutex* pDrawMux);
 
 protected:
     std::string ReadShaderFile(const char* pFilePath);

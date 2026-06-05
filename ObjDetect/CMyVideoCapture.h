@@ -4,12 +4,14 @@
 #include "CMyMat.h"
 #include "COpenGLControl.h"
 
+#include <atomic>
+
 class CMyThreadVideo;
 
 typedef struct tag_STReadMat {
 	CMyMat imgVideo;
 	int iIdx;
-} STReadMat;
+} STReadMat, *LPSTReadMat;
 
 typedef struct tag_TrackedObj {
 	int id;
@@ -31,29 +33,65 @@ public:
 	bool CreateThreadForVideo();
 
 	int m_iNowReadVideo;
-	int m_iNowDrawVideo;
+	ULONGLONG m_qwStartTime;
 
 	Mat CpyFrame();
 	bool WorkFrameToQueue(Mat& frame, int iReadIdx);
 	bool DispQueueData(int iDrawIdx, bool fRatio);
 
 	int GetNumCPU();
-	int GetDelay();
+	double GetDelay();
 
 	void ReleaseThread();
 
-	// MFC Mutex를 사용하였다.
-	// stl mutex는 7과 11에서 작동하지 않았다.
-	// 10에서는 작동을 하였지만...
-	CMutex m_muReadV;
-	CMutex m_muDrawV;
+	void SetHogSkipFrame(bool bSkipFrame);
+	void SetShowFPS(bool bShowFPS);
+
+	bool GetVideoEmpty();
+	LPSTReadMat GetVideoFrontPtr();
+	int GetReadThreadCnt();
+
+	// 1. Read(생산자) 스레드 그룹 간의 순서 정렬용 세트 (기존 m_muReadV 대체)
+	std::mutex              m_readMtx;
+	std::condition_variable m_cvReadOrder;
+
+	// 2. Draw(화면 표시) 스레드 그룹 간의 순서 정렬용 세트 (기존 m_muDrawV 대체)
+	std::mutex              m_drawMtx;
+	std::condition_variable m_cvDrawOrder;
+
+	std::mutex m_captureMtx; // 캡처 전용 뮤텍스 추가
+
+	atomic<bool> m_bVideoProcessingEnable;
+
+	std::atomic<bool> m_bPause;
+
+	void SetMuxNotify();
+
+	bool ReloadVideo();
+	void SetEndPlay(bool bEndPlay);
+
+protected:
+	// FPS 계산을 위한 멤버 변수들
+	double m_dFinalFPS;          // 최종 FPS 값
+	ULONGLONG m_qwLastFPSTime = 0;     // 마지막 측정 기준 시간
 
 private:
 	bool m_bQRScan;
 	int m_iNumCPU;
 	double m_dFPS;
-	int m_iDelay;
-	bool m_bEndPlay;
+	double m_dDelay;
+	std::atomic<bool> m_bEndPlay;
+
+	// 일반 bool 대신 atomic을 사용합니다.
+	std::atomic<bool> m_bTimeOver;
+	bool m_bHogSkipFrame;
+	bool m_bShowFPS;
+
+	// 실시간 FPS 계산을 위한 변수들
+	ULONGLONG m_qwLastRenderTime; // 직전 프레임이 출력된 시간
+	double    m_dRealRenderFPS;  // 최종 계산된 실시간 FPS
+
+	vector<Rect> m_vecLastDetected;
 
 	string m_strImgFile_a;
 
@@ -66,8 +104,12 @@ private:
 
 	queue<unique_ptr<STReadMat>> m_qVideo;
 
-	CMyThreadVideo* m_arThReadV;
-	CMyThreadVideo* m_arThDrawV;
+	// 기존 포인터 배열 대신 vector와 unique_ptr 사용
+	std::vector<std::unique_ptr<CMyThreadVideo>> m_vThReadV;
+	std::vector<std::unique_ptr<CMyThreadVideo>> m_vThDrawV;
+
+	// CMyThreadVideo* m_arThReadV;
+	// CMyThreadVideo* m_arThDrawV;
 
 	cv::Scalar GetColorForID(int id);
 

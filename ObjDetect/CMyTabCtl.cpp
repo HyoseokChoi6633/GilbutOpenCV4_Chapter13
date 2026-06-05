@@ -20,51 +20,40 @@ int CMyTabCtl::OnInitCtl()
 	CRect rtTab;
 	m_tabCtl.GetWindowRect(rtTab);
 
-	m_parrDlg = new CDialog*[iTabSize];
+	// 다이얼로그 ID 정의
+	int arriIDC[4] = { IDD_DISP3_TAB, IDD_DISP3_TAB, IDD_DISP1_TAB, IDD_DISP1_TAB };
 
-	CDialog* parrDlg[iTabSize];
-
-	parrDlg[0] = new CDlgDisp3TabPage;
-	parrDlg[1] = new CDlgDisp3TabPage;
-	parrDlg[2] = new CDlgDisp1TabPage;
-	parrDlg[3] = new CDlgDisp1TabPage;
-
-	int arriIDC[iTabSize];
-
-	arriIDC[0] = IDD_DISP3_TAB;
-	arriIDC[1] = IDD_DISP3_TAB;
-	arriIDC[2] = IDD_DISP1_TAB;
-	arriIDC[3] = IDD_DISP1_TAB;
-
+	// 1. 다이얼로그 동적 생성 및 등록
 	for (i = 0; i < iTabSize; i++) {
-		m_parrDlg[i] = parrDlg[i];
-		m_parrDlg[i]->Create(arriIDC[i], &m_tabCtl);
-		m_parrDlg[i]->MoveWindow(0, 20, rtTab.Width(), rtTab.Height() - 20);
-		m_parrDlg[i]->ShowWindow(i == 0 ? SW_SHOW : SW_HIDE);
+		std::unique_ptr<CDialog> pDlg;
+
+		if (i < 2) pDlg = std::make_unique<CDlgDisp3TabPage>();
+		else       pDlg = std::make_unique<CDlgDisp1TabPage>();
+
+		pDlg->Create(arriIDC[i], &m_tabCtl);
+		pDlg->MoveWindow(0, 20, rtTab.Width(), rtTab.Height() - 20);
+		pDlg->ShowWindow(i == 0 ? SW_SHOW : SW_HIDE);
+
+		m_vDlgList.push_back(std::move(pDlg));
 	}
 
+	// 2. 초기화 루틴
 	for (i = 0; i < iTabSize; i++) {
+		// 벡터에 저장된 포인터 사용
+		CDialog* pDlg = m_vDlgList[i].get();
 
-		switch (i) {
-		case 0:
-		case 1:
-			iRetVal = ((CDlgDisp3TabPage*)parrDlg[i])->OnInitProgram(i);
-			break;
-		case 2:
-		case 3:
-			iRetVal = ((CDlgDisp1TabPage*)parrDlg[i])->OnInitProgram(i);
-			break;
-		}
+		if (i < 2) iRetVal = ((CDlgDisp3TabPage*)pDlg)->OnInitProgram(i);
+		else       iRetVal = ((CDlgDisp1TabPage*)pDlg)->OnInitProgram(i);
 
-		if (iRetVal == -1) {
-			break;
-		}
+		if (iRetVal == -1) break;
 	}
 
-	if (i == 3 && iRetVal >= -1) {
-		if (AfxMessageBox(_T("카메라가 시스템에 없습니다.\n그래도 실행하시겠습니까?"), MB_ICONQUESTION | MB_YESNO) == IDYES) {
-			iRetVal = 0;
+	// 3. 예외 처리
+	if (iRetVal == -1) {
+		if (AfxMessageBox(_T("카메라가 시스템에 없습니다.\n그래도 실행하시겠습니까?"), MB_ICONQUESTION | MB_YESNO) != IDYES) {
+			return -1;
 		}
+		iRetVal = 0;
 	}
 
 	return iRetVal;
@@ -72,23 +61,24 @@ int CMyTabCtl::OnInitCtl()
 
 void CMyTabCtl::OnTcnSelchange(NMHDR* pNMHDR, LRESULT* pResult)
 {
+	static int iPrevSel = 0;
 	int iSelect = m_tabCtl.GetCurSel();
 
 	const int iTabSize = _countof(m_arrtabCtlTitle);
 
 	for (int i = 0; i < iTabSize; i++) {
-		m_parrDlg[i]->ShowWindow(i == iSelect ? SW_SHOW : SW_HIDE);
+		m_vDlgList[i]->ShowWindow(i == iSelect ? SW_SHOW : SW_HIDE);
 	}
 
-	// 탭을 벗어 났을 때 쓰레드 때문에 난잡해진 코드...
-	// 테스트 용으로 봐주시길...
 	if (iSelect >= 2) {
-		OnThreadDestroy();
-		((CDlgDisp1TabPage*)m_parrDlg[iSelect])->OnPlayVideo();
+		((CDlgDisp1TabPage*)m_vDlgList[iSelect].get())->OnPlayVideo();
 	}
-	else {
-		OnThreadDestroy();
+
+	if (iPrevSel >= 2) {
+		((CDlgDisp1TabPage*)m_vDlgList[iPrevSel].get())->OnPauseVideo();
 	}
+
+	iPrevSel = iSelect;
 }
 
 void CMyTabCtl::OnDispTypeChange(EDisplayMode eDisplayMode)
@@ -96,10 +86,10 @@ void CMyTabCtl::OnDispTypeChange(EDisplayMode eDisplayMode)
 	int iSelect = m_tabCtl.GetCurSel();
 
 	if (iSelect >= 2) {
-		((CDlgDisp1TabPage*)m_parrDlg[iSelect])->SetDisplayMode(eDisplayMode);
+		((CDlgDisp1TabPage*)m_vDlgList[iSelect].get())->SetDisplayMode(eDisplayMode);
 	}
 	else {
-		((CDlgDisp3TabPage*)m_parrDlg[iSelect])->SetDisplayMode(eDisplayMode);
+		((CDlgDisp3TabPage*)m_vDlgList[iSelect].get())->SetDisplayMode(eDisplayMode);
 	}
 }
 
@@ -110,6 +100,15 @@ void CMyTabCtl::DoDataExchange(CDataExchange* pDX, int iIDC)
 
 void CMyTabCtl::OnThreadDestroy()
 {
-	((CDlgDisp1TabPage*)m_parrDlg[2])->ReleaseThread();
-	((CDlgDisp1TabPage*)m_parrDlg[3])->ReleaseThread();
+	((CDlgDisp1TabPage*)m_vDlgList[2].get())->ReleaseThread();
+	((CDlgDisp1TabPage*)m_vDlgList[3].get())->ReleaseThread();
+}
+
+void CMyTabCtl::SetHogSkipFrame(bool bHogSkipFrame) {
+	((CDlgDisp1TabPage*)m_vDlgList[2].get())->SetHogSkipFrame(bHogSkipFrame);
+}
+
+void CMyTabCtl::SetShowFPS(bool bShowFPS) {
+	((CDlgDisp1TabPage*)m_vDlgList[2].get())->SetShowFPS(bShowFPS);
+	((CDlgDisp1TabPage*)m_vDlgList[3].get())->SetShowFPS(bShowFPS);
 }

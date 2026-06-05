@@ -43,4 +43,6 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg void OnClickedRadioDispGdi();
 	afx_msg void OnBnClickedRadioDispOpengl();
+	afx_msg void OnClickedChkSkipFrame();
+	afx_msg void OnClickedChkShowFps();
 };

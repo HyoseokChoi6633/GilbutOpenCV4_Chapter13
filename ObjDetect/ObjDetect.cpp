@@ -57,7 +57,9 @@ BOOL CObjDetectApp::InitInstance()
 
 	// 대화 상자에 셸 트리 뷰 또는
 	// 셸 목록 뷰 컨트롤이 포함되어 있는 경우 셸 관리자를 만듭니다.
-	CShellManager *pShellManager = new CShellManager;
+	// pShellManager를 unique_ptr로 선언합니다.
+	// 스코프(함수)를 벗어나면 자동으로 메모리가 해제되므로 delete가 필요 없습니다.
+	std::unique_ptr<CShellManager> pShellManager = std::make_unique<CShellManager>();
 
 	// MFC 컨트롤의 테마를 사용하기 위해 "Windows 원형" 비주얼 관리자 활성화
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
@@ -90,11 +92,12 @@ BOOL CObjDetectApp::InitInstance()
 		TRACE(traceAppMsg, 0, "경고: 대화 상자에서 MFC 컨트롤을 사용하는 경우 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS를 수행할 수 없습니다.\n");
 	}
 
+	// 삭제 루틴을 더 이상 작성할 필요가 없습니다. (자동 삭제)
 	// 위에서 만든 셸 관리자를 삭제합니다.
-	if (pShellManager != nullptr)
-	{
-		delete pShellManager;
-	}
+	//if (pShellManager != nullptr)
+	//{
+	//	delete pShellManager;
+	//}
 
 #if !defined(_AFXDLL) && !defined(_AFX_NO_MFC_CONTROLS_IN_DIALOGS)
 	ControlBarCleanUp();

@@ -18,6 +18,11 @@ using namespace cv;
 
 #include <afxmt.h>
 
+// 1. 타이머 관련 함수가 선언된 헤더 파일을 포함합니다.
+#include <timeapi.h>
+
+#include <condition_variable>
+
 enum EDisplayMode {
 	MODE_GDI = 0,
 	MODE_OPENGL

@@ -71,6 +71,8 @@ BEGIN_MESSAGE_MAP(CObjDetectDlg, CDialog)
 	ON_WM_DESTROY()
 	ON_BN_CLICKED(IDC_RADIO_DISP_GDI, &CObjDetectDlg::OnClickedRadioDispGdi)
 	ON_BN_CLICKED(IDC_RADIO_DISP_OPENGL, &CObjDetectDlg::OnBnClickedRadioDispOpengl)
+	ON_BN_CLICKED(IDC_CHK_HOG_SKIP_FRAME, &CObjDetectDlg::OnClickedChkSkipFrame)
+	ON_BN_CLICKED(IDC_CHK_SHOW_FPS, &CObjDetectDlg::OnClickedChkShowFps)
 END_MESSAGE_MAP()
 
 
@@ -118,6 +120,25 @@ BOOL CObjDetectDlg::OnInitDialog()
 	m_eDisplayMode = MODE_OPENGL;
 
 	m_objTab.OnDispTypeChange(m_eDisplayMode);
+
+	CButton* pCheck = (CButton*)GetDlgItem(IDC_CHK_HOG_SKIP_FRAME);
+	if (pCheck) {
+		pCheck->SetCheck(BST_CHECKED);
+
+		bool bChecked = (pCheck->GetCheck() == BST_CHECKED);
+		m_objTab.SetHogSkipFrame(bChecked);
+	}
+
+	pCheck = (CButton*)GetDlgItem(IDC_CHK_SHOW_FPS);
+	if (pCheck) {
+		pCheck->SetCheck(BST_CHECKED);
+
+		bool bChecked = (pCheck->GetCheck() == BST_CHECKED);
+		m_objTab.SetShowFPS(bChecked);
+	}
+
+	// OS의 타이머 정밀도를 1ms 단위로 극대화합니다.
+	::timeBeginPeriod(1);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -197,6 +218,9 @@ void CObjDetectDlg::OnDestroy()
 	// 2024-0616_1419 프로그램 종료시 스레드 종료 코드 추가
 	// 동영상과 카메라 스레드 종료 코드
 	m_objTab.OnThreadDestroy();
+
+	// 사용이 끝나면 반드시 원래 OS 정밀도(15.6ms)로 복원해 주어야 합니다.
+	::timeEndPeriod(1);
 }
 
 void CObjDetectDlg::OnClickedRadioDispGdi()
@@ -219,4 +243,33 @@ void CObjDetectDlg::OnBnClickedRadioDispOpengl()
 		m_objTab.OnDispTypeChange(m_eDisplayMode);
 		Invalidate(FALSE);		// 화면 갱신 요청
 	}
+}
+
+void CObjDetectDlg::OnClickedChkSkipFrame()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// 1. 체크박스 컨트롤의 현재 체크 상태를 확인합니다.
+	CButton* pCheck = (CButton*)GetDlgItem(IDC_CHK_HOG_SKIP_FRAME);
+	if (pCheck == nullptr) {
+		return;
+	}
+
+	bool bChecked = (pCheck->GetCheck() == BST_CHECKED);
+
+	// 2. 비디오 캡처 객체의 플래그를 실시간으로 업데이트합니다.
+	m_objTab.SetHogSkipFrame(bChecked);
+}
+
+void CObjDetectDlg::OnClickedChkShowFps()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	// 1. 체크박스 컨트롤의 현재 체크 상태를 확인합니다.
+	CButton* pCheck = (CButton*)GetDlgItem(IDC_CHK_SHOW_FPS);
+	if (pCheck == nullptr) {
+		return;
+	}
+
+	bool bChecked = (pCheck->GetCheck() == BST_CHECKED);
+
+	m_objTab.SetShowFPS(bChecked);
 }

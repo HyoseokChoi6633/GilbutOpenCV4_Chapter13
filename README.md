@@ -4,10 +4,6 @@
 <br>
 * **[📥 전체 프로젝트 및 리소스 다운로드 (696MB)](https://drive.google.com/file/d/1iydggtPXza4Fo9g4X5u_NP_CtDLbZLkD/view?usp=drive_link)**
 =======
-길벗OpenCV4 Chapter13 (예제통합) [2026-0515_1706]
-<br>
-* **[📥 전체 프로젝트 및 리소스 다운로드 (1.05G)](https://drive.google.com/file/d/16Qe1f2eLrKaqtQ7bqrwmrpZoKZ-31cL_/view?usp=drive_link)**<br>
->>>>>>> 1cebd1d820b9cd5f0e42331c12d182c349e4a4e2
 <br>
 ### 🛠️ 실행 환경
 * **IDE:** Visual Studio 2022<br>
@@ -31,6 +27,13 @@ HOG 동영상 트래킹 로직 개선<br>
 <<<<<<< HEAD
 2026-0518<br>
 Gdi 또는 OpenGL 출력 선택 가능 UI 적용<br>
+<br>
+2026-0606<br>
+Hog Skip Frame 적용(저사양 PC에서 Hog 계산 특정 Frame Skip 기능)<br>
+Render FPS 표시(FPS 표시로 Hog 적용에 의한 프레임 확인 가능)<br>
+std::condition_variable 이벤트 동기화 기법 적용(동기화 최적화): Sleep() 사용 최소화 시킴<br>
+동적 할당을 스마트 포인터로 교체<br>
+동영상 재생 스레드 로직을 교체(초기화시 한번 스레드를 생성하고 동영상 반복시 기존 스레드에서 계속 재생 진행)<br>
 <br>
 <br>
 =======

@@ -40,5 +40,8 @@ private:
 
 public:
 	void OnPlayVideo();
+	void OnPauseVideo();
 	void ReleaseThread();
+	void SetHogSkipFrame(bool bSkipFrame);
+	void SetShowFPS(bool bShowFPS);
 };
