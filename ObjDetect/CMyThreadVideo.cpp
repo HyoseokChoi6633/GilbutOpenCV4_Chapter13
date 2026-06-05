@@ -119,6 +119,8 @@ UINT CMyThreadVideo::ThreadForDrawVideo(LPVOID pParam)
 			// 4. 락 해제 (그리기가 끝나면 즉시 풀어주어 생산자가 큐에 접근하게 함)
 			drawLock.unlock();
 
+			pVC->m_cvReadOrder.notify_all();
+
 			continue;
 		}
 
