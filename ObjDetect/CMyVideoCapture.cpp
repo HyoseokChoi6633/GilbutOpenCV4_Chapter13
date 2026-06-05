@@ -201,7 +201,7 @@ bool CMyVideoCapture::WorkFrameToQueue(Mat& frame, int iReadIdx)
 			ULONGLONG qwHOGDuration = ::GetTickCount64() - qwStartHOG;
 
 			// 3. 1프레임당 허용 시간 계산 (예: 30fps -> 33.33ms)
-			double fFrameDelayMs = GetDelay();
+			double fFrameDelayMs = GetDelay() * (GetReadThreadCnt() / 2);
 
 			// 4. 순수 연산 시간이 1프레임 골든타임을 초과했는지 직관적으로 비교합니다.
 			// 만약 HOG 연산에 50ms가 걸렸다면, 다음 스레드가 들어올 때 스킵하라고 플래그를 켭니다.
@@ -238,7 +238,7 @@ bool CMyVideoCapture::WorkFrameToQueue(Mat& frame, int iReadIdx)
 		if (!m_cvCap.isOpened()) return false;
 
 		// 4. 큐가 가득 찼다면 무조건 대기 (제어권 방어)
-		if (m_qVideo.size() > 5) return false;
+		if (m_qVideo.size() > GetReadThreadCnt() * 3) return false;
 
 		// 5. 내 차례가 되었을 때만 통과(true) 
 		return (m_iNowReadVideo == iReadIdx);
