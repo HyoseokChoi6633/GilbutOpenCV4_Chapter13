@@ -1,6 +1,6 @@
 # GilbutOpenCV4_Chapter13
 <<<<<<< HEAD
-길벗OpenCV4 Chapter13 (예제통합) [2026-0606_0231]
+길벗OpenCV4 Chapter13 (예제통합) [2026-0706_1628]
 <br>
 * **[📥 전체 프로젝트 및 리소스 다운로드 (86.7MB)](https://drive.google.com/file/d/1KAv0J5Nsqs9PV2bh9WL1nUEGXDebreBQ/view?usp=drive_link)**
 =======
