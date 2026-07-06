@@ -2,7 +2,7 @@
 <<<<<<< HEAD
 길벗OpenCV4 Chapter13 (예제통합) [2026-0606_0231]
 <br>
-* **[📥 전체 프로젝트 및 리소스 다운로드 (86.7MB)](https://drive.google.com/file/d/1beFa7N_DTL3x0z9UCKu_abEyzAqw3G7E/view?usp=drive_link)**
+* **[📥 전체 프로젝트 및 리소스 다운로드 (86.7MB)](https://drive.google.com/file/d/1KAv0J5Nsqs9PV2bh9WL1nUEGXDebreBQ/view?usp=drive_link)**
 =======
 <br>
 ### 🛠️ 실행 환경
@@ -34,6 +34,10 @@ std::condition_variable 이벤트 동기화 기법 적용(동기화 최적화): 
 동적 할당을 스마트 포인터로 교체<br>
 동영상 재생 스레드 로직을 교체(초기화시 한번 스레드를 생성하고 동영상 반복시 기존 스레드에서 계속 재생 진행)<br>
 <br>
+2026-0706<br>
+Tab0 이름 오타 수정(Template)<br>
+QRCode 텝 설명 이미지 추가(개인 배경이 있어 검은색 지우개를 사용함)<br>
+<br>
 <br>
 qrCode 텝은 카메라가 있어야 되고<br>
 카메라가 인식한 qrCode의 문자열을 화면에 표시함(컴퓨터 카메라에 휴대폰 화면의 QR코드를 띄어 URL 표시가능)<br>
@@ -63,3 +67,4 @@ Debug 실행 파일은 동영상 재생이 아주 느림... 이건 release 상�
 <img src="./images/screenshoot2.png" width="800" height="750" alt="실행 화면"><br>
 <img src="./images/screenshoot3.png" width="800" height="750" alt="실행 화면"><br>
 <img src="./images/screenshoot4.png" width="800" height="454" alt="실행 화면"><br>
+<img src="./images/screenshoot5.png" width="800" height="454" alt="실행 화면"><br>
