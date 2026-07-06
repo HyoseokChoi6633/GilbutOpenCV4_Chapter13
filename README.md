@@ -66,5 +66,5 @@ Debug 실행 파일은 동영상 재생이 아주 느림... 이건 release 상�
 <img src="./images/screenshoot1.png" width="800" height="750" alt="실행 화면"><br>
 <img src="./images/screenshoot2.png" width="800" height="750" alt="실행 화면"><br>
 <img src="./images/screenshoot3.png" width="800" height="750" alt="실행 화면"><br>
-<img src="./images/screenshoot4.png" width="800" height="454" alt="실행 화면"><br>
+<img src="./images/screenshoot4.png" width="800" height="750" alt="실행 화면"><br>
 <img src="./images/screenshoot5.png" width="800" height="454" alt="실행 화면"><br>
